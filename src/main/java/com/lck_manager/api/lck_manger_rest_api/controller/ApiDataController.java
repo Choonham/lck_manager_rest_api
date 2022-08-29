@@ -37,6 +37,10 @@ public class ApiDataController {
     @GetMapping("/regUser")
     @ResponseBody
     public int regUser(@RequestParam User user) {
+        /*User user = new User();
+        user.setUserId(userId);
+        user.setUserNickName(userNickName);
+        user.setSeasonCode(Integer.parseInt(seasonCode));*/
         return userRepository.save(user).getUserCode();
     }
     // ################### user End ################## //

@@ -1,6 +1,7 @@
 package com.lck_manager.api.lck_manger_rest_api.entity;
 
 import lombok.Data;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 
@@ -15,24 +16,38 @@ public class Champion {
 
     private String championName;
 
-    private double laneStrength;
+    private int laneStrength;
 
-    private double teamFight;
+    private int teamFight;
 
-    private double splitPush;
+    private int splitPush;
 
-    private double oneVsOneStrength;
+    private int initiating;
 
-    private double initiating;
+    private int poking;
 
-    private double poking;
+    private int nuking;
 
+    private int util;
+
+    private int cc;
+
+    private int gank;
+
+    private int tank;
+
+    private int dps;
+
+    private double potential1;
+
+    private double potential2;
+
+    private double potential3;
+
+    @Nullable
     private int type;
 
-    private double toSixPotential;
-
-    private double toElvPotential;
-
-    private double toSixteenPotential;
+    @Nullable
+    private double winRate;
 
 }

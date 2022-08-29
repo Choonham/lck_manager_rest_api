@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class TestController {
-    @GetMapping("/test")
+    @GetMapping("/test.do")
     public String[] test() {
 
         return new String[]{"test", "spring boot test"};
