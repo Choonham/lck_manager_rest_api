@@ -1,5 +1,6 @@
 package com.lck_manager.api.lck_manger_rest_api.controller;
 
+import com.lck_manager.api.lck_manger_rest_api.entity.Player;
 import com.lck_manager.api.lck_manger_rest_api.entity.Season;
 import com.lck_manager.api.lck_manger_rest_api.entity.Team;
 import com.lck_manager.api.lck_manger_rest_api.entity.User;
@@ -7,7 +8,11 @@ import com.lck_manager.api.lck_manger_rest_api.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/apiDataServer")
@@ -34,9 +39,9 @@ public class ApiDataController {
     UserRepository userRepository;
 
     // ################### User Start ################## //
-    @GetMapping("/regUser")
+    @RequestMapping(value ="/regUser", produces="application/json; charset=utf-8", method = RequestMethod.POST)
     @ResponseBody
-    public int regUser(@RequestParam User user) {
+    public int regUser(@RequestBody User user) {
         /*User user = new User();
         user.setUserId(userId);
         user.setUserNickName(userNickName);
@@ -46,23 +51,23 @@ public class ApiDataController {
     // ################### user End ################## //
 
     // ################### Team Start ################## //
-    @GetMapping("/getTeamList")
+    @RequestMapping(value ="/getTeamList", produces="application/json; charset=utf-8", method = RequestMethod.POST)
     @ResponseBody
-    public Object getTeamList(@RequestParam String seasonForShort) {
-        Season season = seasonRepository.findSeasonBySeasonForShort(seasonForShort);
+    public Object getTeamList(@RequestBody Map<String, String> params) {
+        Season season = seasonRepository.findSeasonBySeasonForShort(params.get("seasonForShort"));
         return teamRepository.findAllBySeason(season);
     }
 
-    @GetMapping("/getTeamInfo")
+    @RequestMapping(value ="/getTeamInfo", produces="application/json; charset=utf-8", method = RequestMethod.POST)
     @ResponseBody
-    public Object getTeamInfo(@RequestParam int teamCode) {
-        return teamRepository.findAllByTeamCode(teamCode);
+    public Object getTeamInfo(@RequestBody Map<String, String> params) {
+        return teamRepository.findAllByTeamCode(Integer.parseInt(params.get("teamCode")));
     }
     // ################### Team End ################## //
 
 
     // ################### Season Start ################## //
-    @GetMapping("/getSeasonList")
+    @RequestMapping(value ="/getSeasonList", produces="application/json; charset=utf-8", method = RequestMethod.POST)
     @ResponseBody
     public Object getSeasonList() {
         return seasonRepository.findAllBy();
@@ -71,61 +76,80 @@ public class ApiDataController {
 
 
     // ################### Champion Start ################## //
-    @GetMapping("/getChampionList")
+    @RequestMapping(value ="/getChampionList", produces="application/json; charset=utf-8", method = RequestMethod.POST)
     @ResponseBody
     public Object getChampionList() {
         return championRepository.findAllBy();
     }
 
-    @GetMapping("/getChampionInfo")
+    @RequestMapping(value ="/getChampionInfo", produces="application/json; charset=utf-8", method = RequestMethod.POST)
     @ResponseBody
-    public Object getChampionInfo(@RequestParam int championCode) {
-        return championRepository.findChampionByChampionCode(championCode);
+    public Object getChampionInfo(@RequestBody Map<String, String> params) {
+        return championRepository.findChampionByChampionCode(Integer.parseInt(params.get("championCode")));
     }
 
-    @GetMapping("/getChampionCounterInfo")
+    @RequestMapping(value ="/getChampionCounterInfo", produces="application/json; charset=utf-8", method = RequestMethod.POST)
     @ResponseBody
-    public Object getChampionCounterInfo(@RequestParam int championCode, @RequestParam int counterChampionCode) {
+    public Object getChampionCounterInfo(@RequestBody Map<String, String> params) {
+        int championCode = Integer.parseInt(params.get("championCode"));
+        int counterChampionCode = Integer.parseInt(params.get("counterChampionCode"));
+
         return championCounterRepository.findChampionCounterByChampionAndCounterChampion(championCode, counterChampionCode);
     }
 
-    @GetMapping("/getChampionCounters")
+    @RequestMapping(value ="/getChampionCounters", produces="application/json; charset=utf-8", method = RequestMethod.POST)
     @ResponseBody
-    public Object getChampionCounters(@RequestParam int championCode) {
-        return championCounterRepository.findChampionCountersByChampion(championCode);
+    public Object getChampionCounters(@RequestBody Map<String, String> params) {
+        return championCounterRepository.findChampionCountersByChampion(Integer.parseInt(params.get("playerCode")));
     }
     // ################### Champion End ################## //
 
 
     // ################### Player Start ################## //
-    @GetMapping("/getPlayerList")
+    @RequestMapping(value ="/getPlayerList", produces="application/json; charset=utf-8", method = RequestMethod.POST)
     @ResponseBody
     public Object getPlayerList() {
         return playerRepository.findAllBy();
     }
 
-    @GetMapping("/getSeasonPlayerList")
+
+    @RequestMapping(value ="/getSeasonPlayerList", produces="application/json; charset=utf-8", method = RequestMethod.POST)
     @ResponseBody
-    public Object getSeasonPlayerList(String seasonForShort) {
-        Season season = seasonRepository.findSeasonBySeasonForShort(seasonForShort);
+    public Object getSeasonPlayerList(@RequestBody Map<String, String> params) {
+        Season season = seasonRepository.findSeasonBySeasonForShort(params.get("seasonForShort"));
         return playerRepository.findAllBySeasonCode(season);
     }
 
-    @GetMapping("/getPlayerInfo")
+
+    @RequestMapping(value ="/getPlayerInfo", produces="application/json; charset=utf-8", method = RequestMethod.POST)
     @ResponseBody
-    public Object getPlayerInfo(int playerCode) {
-        return playerRepository.findAllByPlayerCode(playerCode);
+    public Object getPlayerInfo(@RequestBody Map<String, String> params) {
+        return playerRepository.findAllByPlayerCode(Integer.parseInt(params.get("playerCode")));
+    }
+
+    @RequestMapping(value ="/getFirstPlayerList", produces="application/json; charset=utf-8", method = RequestMethod.POST)
+    @ResponseBody
+    public Object getFirstPlayerList(@RequestBody Map<String, String> params) {
+        List<Player> firstPlayerList = new ArrayList<>();
+        for(int i = 1; i <=5; i++) {
+            List<Player> tempList = playerRepository.getFirstPlayerList(i,Integer.parseInt(params.get("seasonCode")));
+            for(Player player : tempList) {
+                firstPlayerList.add(player);
+            }
+        }
+        return firstPlayerList;
     }
     // ################### Player End ################## //
 
 
     // ################### Roster Start ################## //
-    @GetMapping("/getTeamRoster")
+    @RequestMapping(value ="/getTeamRoster", produces="application/json; charset=utf-8", method = RequestMethod.POST)
     @ResponseBody
-    public Object getTeamRoster(int teamCode, int entryCode) {
-        Team team = teamRepository.findAllByTeamCode(teamCode);
-        return rosterRepository.findAllByTeamAndMainEntry(team, entryCode);
+    public Object getTeamRoster(@RequestBody Map<String, String> params) {
+        Team team = teamRepository.findAllByTeamCode(Integer.parseInt(params.get("teamCode")));
+        return rosterRepository.findAllByTeamAndMainEntry(team, Integer.parseInt(params.get("entryCode")));
     }
+
     // ################### Roster End ################## //
 
 
