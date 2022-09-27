@@ -12,4 +12,7 @@ import java.util.List;
 public interface RosterRepository extends JpaRepository<Roster, Integer> {
     List<Roster> findAllByTeamAndMainEntry(Team team, int mainEntry);
 
+    @Query("SELECT r FROM Roster r LEFT JOIN Team t ON t.teamCode = r.team.teamCode WHERE t.season.seasonCode = :seasonCode")
+    List<Roster> findRosterByTeamSeasonCode(int seasonCode);
+
 }

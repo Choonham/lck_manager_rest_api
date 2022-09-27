@@ -8,5 +8,7 @@ import java.util.List;
 
 public interface SeasonRepository extends JpaRepository<Season, Integer> {
     Season findSeasonBySeasonForShort(String seasonForShort);
+
+    Season findSeasonBySeasonCode(int seasonCode);
     List<Season> findAllBy();
 }

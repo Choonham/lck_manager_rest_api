@@ -17,6 +17,7 @@ public class Team {
     @JoinColumn(name="user_code")
     private User userCode;
 
+    @Column(columnDefinition = "default 0")
     private int userType;
 
     private String teamName;
@@ -25,10 +26,13 @@ public class Team {
     @JoinColumn(name="season_code")
     private Season season;
 
+    @Column(columnDefinition = "default 0")
     private double winRate;
 
+    @Column(columnDefinition = "default 0")
     private int totalWins;
 
+    @Column(columnDefinition = "default 0")
     private int totalLoses;
 
 }
